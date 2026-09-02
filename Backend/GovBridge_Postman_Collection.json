@@ -1,0 +1,134 @@
+{
+	"info": {
+		"name": "GovBridge Services",
+		"description": "Postman collection for the GovBridge microservices API via the Nginx API Gateway.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Identity Service",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:30080/api/auth/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"auth",
+								"health"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Application Service",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:30080/api/applications/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"applications",
+								"health"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Interoperability Service",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:30080/api/interoperability/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"interoperability",
+								"health"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Notification Service",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:30080/api/notifications/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"notifications",
+								"health"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Mock Government Service",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:30080/api/mock/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"mock",
+								"health"
+							]
+						}
+					}
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: interoperability-service
+  namespace: govbridge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: interoperability-service
+  template:
+    metadata:
+      labels:
+        app: interoperability-service
+    spec:
+      containers:
+      - name: interoperability-service
+        image: interoperability-service:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3003
+        envFrom:
+        - configMapRef:
+            name: govbridge-config
+        - secretRef:
+            name: govbridge-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: interoperability-service
+  namespace: govbridge
+spec:
+  selector:
+    app: interoperability-service
+  ports:
+  - port: 3003
+    targetPort: 3003

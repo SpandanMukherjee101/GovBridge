@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: govbridge-config
+  namespace: govbridge
+data:
+  POSTGRES_HOST: postgres
+  POSTGRES_USER: postgres
+  REDIS_HOST: redis
+  KAFKA_BROKERS: kafka:9092

@@ -1,0 +1,20 @@
+{
+  "name": "interoperability-service",
+  "version": "1.0.0",
+  "description": "interoperability-service for GovBridge",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.11.5",
+    "redis": "^4.6.13",
+    "kafkajs": "^2.2.4",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}

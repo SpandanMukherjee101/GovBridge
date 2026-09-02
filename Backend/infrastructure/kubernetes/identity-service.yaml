@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: identity-service
+  namespace: govbridge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: identity-service
+  template:
+    metadata:
+      labels:
+        app: identity-service
+    spec:
+      containers:
+      - name: identity-service
+        image: identity-service:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3001
+        envFrom:
+        - configMapRef:
+            name: govbridge-config
+        - secretRef:
+            name: govbridge-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: identity-service
+  namespace: govbridge
+spec:
+  selector:
+    app: identity-service
+  ports:
+  - port: 3001
+    targetPort: 3001
