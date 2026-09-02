@@ -2,10 +2,10 @@
   "name": "mock-government-service",
   "version": "1.0.0",
   "description": "mock-government-service for GovBridge",
-  "main": "src/index.js",
+  "main": "src/server.js",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
   },
   "dependencies": {
     "express": "^4.19.2",

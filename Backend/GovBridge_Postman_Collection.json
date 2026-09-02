@@ -127,6 +127,152 @@
 							]
 						}
 					}
+				},
+				{
+					"name": "Get Citizen",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:30080/api/mock/government/citizens/GOV-1001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"mock",
+								"government",
+								"citizens",
+								"GOV-1001"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Property",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:30080/api/mock/government/properties/PROP-001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"mock",
+								"government",
+								"properties",
+								"PROP-001"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Tax Record",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:30080/api/mock/government/tax/TAX-A101",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"mock",
+								"government",
+								"tax",
+								"TAX-A101"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get License",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:30080/api/mock/government/licenses/LIC-9001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"mock",
+								"government",
+								"licenses",
+								"LIC-9001"
+							]
+						}
+					}
+				},
+				{
+					"name": "Create License",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"governmentId\": \"GOV-1001\",\n    \"businessName\": \"Alice Tech Solutions\",\n    \"issuedAt\": \"2025-01-01\",\n    \"expiresAt\": \"2026-12-31\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:30080/api/mock/government/licenses",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"mock",
+								"government",
+								"licenses"
+							]
+						}
+					}
+				},
+				{
+					"name": "Simulate 500 Error (Tax API)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:30080/api/mock/government/tax/TAX-A101?simulate=500",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"mock",
+								"government",
+								"tax",
+								"TAX-A101"
+							],
+							"query": [
+								{
+									"key": "simulate",
+									"value": "500"
+								}
+							]
+						}
+					}
 				}
 			]
 		}

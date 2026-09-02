@@ -24,3 +24,38 @@ kubectl apply -f infrastructure/kubernetes/secrets.yaml
 ```bash
 kubectl apply -f infrastructure/kubernetes/
 ```
+
+## Mock Government Service
+
+The `mock-government-service` acts as an external simulation of varied legacy government APIs.
+
+### Simulated Endpoints (via API Gateway)
+
+- **Citizens API** (Nested JSON format)
+  ```bash
+  curl -s http://localhost:30080/api/mock/government/citizens/GOV-1001
+  ```
+- **Properties API** (Flat legacy format with abbreviations)
+  ```bash
+  curl -s http://localhost:30080/api/mock/government/properties/PROP-001
+  ```
+- **Tax API** (Uppercase format)
+  ```bash
+  curl -s http://localhost:30080/api/mock/government/tax/TAX-A101
+  ```
+- **Business Licenses API** (Standard REST)
+  ```bash
+  curl -s http://localhost:30080/api/mock/government/licenses/LIC-9001
+  ```
+
+### Failure Simulation
+
+You can test error handling and retry logic by appending `?simulate=` to any mock API endpoint:
+- `?simulate=500`: Forces an internal server error.
+- `?simulate=404`: Forces a not found error.
+- `?simulate=timeout`: Forces a 5-second delay.
+
+Example:
+```bash
+curl -s "http://localhost:30080/api/mock/government/tax/TAX-A101?simulate=500"
+```
