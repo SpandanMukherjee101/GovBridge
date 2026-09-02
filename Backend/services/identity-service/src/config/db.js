@@ -5,7 +5,7 @@ const pool = new Pool({
     host: process.env.POSTGRES_HOST || 'postgres',
     database: 'identity_db',
     password: process.env.POSTGRES_PASSWORD || 'postgres',
-    port: process.env.POSTGRES_PORT || 5432,
+    port: 5432,
 });
 
 pool.on('error', (err, client) => {

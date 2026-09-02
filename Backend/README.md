@@ -59,3 +59,25 @@ Example:
 ```bash
 curl -s "http://localhost:30080/api/mock/government/tax/TAX-A101?simulate=500"
 ```
+
+## Identity Service
+
+The `identity-service` provides Authentication (JWT) and Role-Based Access Control (RBAC). 
+
+### Default Credentials (Development Only)
+
+All demo accounts use the password: `password123`
+
+| Email | Role | Department ID |
+| --- | --- | --- |
+| `citizen@govbridge.local` | CITIZEN | `null` |
+| `officer@govbridge.local` | OFFICER | `DEPT-LICENSING` |
+| `admin@govbridge.local` | ADMIN | `null` |
+
+### Key Endpoints
+
+- `POST /api/auth/register` (Email, Password)
+- `POST /api/auth/login` (Email, Password -> Returns Access & Refresh JWT)
+- `POST /api/auth/refresh` (Refresh Token)
+- `POST /api/auth/logout` (Revokes Token)
+- `GET /api/auth/me` (Returns User Profile & Permissions)
