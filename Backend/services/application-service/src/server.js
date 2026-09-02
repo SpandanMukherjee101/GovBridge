@@ -1,23 +1,8 @@
-const express = require('express');
-const dotenv = require('dotenv');
+const app = require('./app');
 const pool = require('./config/db');
 const redisClient = require('./config/redis');
-const kafkaConfig = require('./config/kafka');
 
-dotenv.config();
-
-const app = express();
 const port = process.env.PORT || 3002;
-
-app.use(express.json());
-
-// Health Check Endpoint
-app.get('/health', (req, res) => {
-    res.json({
-        service: "application-service",
-        status: "ok"
-    });
-});
 
 const server = app.listen(port, () => {
     console.log(`application-service running on port ${port}`);

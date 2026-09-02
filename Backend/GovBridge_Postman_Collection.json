@@ -197,6 +197,257 @@
 							]
 						}
 					}
+				},
+				{
+					"name": "List Available Services",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer <INSERT_ACCESS_TOKEN>"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:30080/api/applications/services",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"applications",
+								"services"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Specific Service",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer <INSERT_ACCESS_TOKEN>"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:30080/api/applications/services/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"applications",
+								"services",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "List Applications",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer <INSERT_ACCESS_TOKEN>"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:30080/api/applications/applications",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"applications",
+								"applications"
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Application",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer <INSERT_ACCESS_TOKEN>"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"serviceId\": 1\n}"
+						},
+						"url": {
+							"raw": "http://localhost:30080/api/applications/applications",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"applications",
+								"applications"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Application",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer <INSERT_ACCESS_TOKEN>"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:30080/api/applications/applications/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"applications",
+								"applications",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Submit Application",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer <INSERT_ACCESS_TOKEN>"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:30080/api/applications/applications/1/submit",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"applications",
+								"applications",
+								"1",
+								"submit"
+							]
+						}
+					}
+				},
+				{
+					"name": "Approve Application",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer <INSERT_OFFICER_ACCESS_TOKEN>"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:30080/api/applications/applications/1/approve",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"applications",
+								"applications",
+								"1",
+								"approve"
+							]
+						}
+					}
+				},
+				{
+					"name": "Reject Application",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer <INSERT_OFFICER_ACCESS_TOKEN>"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"reason\": \"Missing required tax clearance records.\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:30080/api/applications/applications/1/reject",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"applications",
+								"applications",
+								"1",
+								"reject"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Application Timeline",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer <INSERT_ACCESS_TOKEN>"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:30080/api/applications/applications/1/timeline",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"applications",
+								"applications",
+								"1",
+								"timeline"
+							]
+						}
+					}
 				}
 			]
 		},
