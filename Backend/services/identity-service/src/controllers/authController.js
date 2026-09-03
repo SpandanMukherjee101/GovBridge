@@ -71,9 +71,16 @@ exports.login = async (req, res, next) => {
             return res.status(401).json({ status: 'error', message: 'Invalid credentials' });
         }
 
+        // Fetch user's role
+        const roleRes = await pool.query(
+            `SELECT r.name as role_name FROM user_roles ur JOIN roles r ON ur.role_id = r.id WHERE ur.user_id = $1 LIMIT 1`,
+            [user.id]
+        );
+        const role = roleRes.rows.length > 0 ? roleRes.rows[0].role_name : 'CITIZEN';
+
         // Generate tokens
         const jti = crypto.randomUUID();
-        const accessToken = jwt.sign({ userId: user.id, jti }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+        const accessToken = jwt.sign({ userId: user.id, role, department_id: user.department_id || null, jti }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
         const refreshToken = generateRefreshToken();
 
         // Store refresh token in DB
@@ -116,9 +123,18 @@ exports.refresh = async (req, res, next) => {
             return res.status(401).json({ status: 'error', message: 'Refresh token expired' });
         }
 
+        // Fetch user's role for the refreshed token
+        const userRes = await pool.query('SELECT department_id FROM users WHERE id = $1', [tokenData.user_id]);
+        const roleRes = await pool.query(
+            `SELECT r.name as role_name FROM user_roles ur JOIN roles r ON ur.role_id = r.id WHERE ur.user_id = $1 LIMIT 1`,
+            [tokenData.user_id]
+        );
+        const role = roleRes.rows.length > 0 ? roleRes.rows[0].role_name : 'CITIZEN';
+        const dept = userRes.rows.length > 0 ? userRes.rows[0].department_id : null;
+
         // Issue new access token
         const jti = crypto.randomUUID();
-        const accessToken = jwt.sign({ userId: tokenData.user_id, jti }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+        const accessToken = jwt.sign({ userId: tokenData.user_id, role, department_id: dept, jti }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
         const newRefreshToken = generateRefreshToken();
 
         const expiresAt = new Date();

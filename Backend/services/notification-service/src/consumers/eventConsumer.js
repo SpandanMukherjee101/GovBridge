@@ -31,7 +31,7 @@ const generateNotificationContent = (topic, eventType, data) => {
                 message: 'Data access consent has been revoked.'
             };
         case 'DATA_VERIFIED':
-            // Technically DATA_RECEIVED in interoperability, but mapping it
+        case 'DATA_RECEIVED':
             return {
                 title: 'Data Verified',
                 message: 'Property ownership or required information has been verified.'

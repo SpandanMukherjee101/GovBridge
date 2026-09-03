@@ -2,7 +2,7 @@ const pool = require('../config/db');
 
 exports.getNotifications = async (req, res, next) => {
     try {
-        const userId = req.user.userId || req.user.id;
+        const userId = req.user.userId;
         const result = await pool.query(
             'SELECT * FROM notifications WHERE user_id = $1 ORDER BY created_at DESC LIMIT 50',
             [userId]
@@ -15,7 +15,7 @@ exports.getNotifications = async (req, res, next) => {
 
 exports.getNotification = async (req, res, next) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user.userId;
         const { id } = req.params;
         const result = await pool.query(
             'SELECT * FROM notifications WHERE id = $1 AND user_id = $2',
@@ -34,7 +34,7 @@ exports.getNotification = async (req, res, next) => {
 
 exports.markAsRead = async (req, res, next) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user.userId;
         const { id } = req.params;
         const result = await pool.query(
             'UPDATE notifications SET read_at = NOW() WHERE id = $1 AND user_id = $2 AND read_at IS NULL RETURNING *',
@@ -53,7 +53,7 @@ exports.markAsRead = async (req, res, next) => {
 
 exports.markAllAsRead = async (req, res, next) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user.userId;
         const result = await pool.query(
             'UPDATE notifications SET read_at = NOW() WHERE user_id = $1 AND read_at IS NULL RETURNING id',
             [userId]

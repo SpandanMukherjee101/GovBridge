@@ -14,14 +14,12 @@ const authMiddleware = (req, res, next) => {
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
 
-        req.user = decoded; 
-        
-        if (decoded.userId === 1) req.user.role = 'CITIZEN';
-        else if (decoded.userId === 2) {
-            req.user.role = 'OFFICER';
-            req.user.department_id = 'DEPT-LICENSING';
-        }
-        else if (decoded.userId === 3) req.user.role = 'ADMIN';
+        req.user = {
+            userId: decoded.userId,
+            role: decoded.role || 'CITIZEN',
+            department_id: decoded.department_id || null,
+            jti: decoded.jti
+        };
 
         next();
     } catch (err) {

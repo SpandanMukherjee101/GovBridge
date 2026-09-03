@@ -6,7 +6,7 @@ const consumer = kafka.consumer({ groupId: 'interoperability-group' });
 
 exports.startConsumer = async () => {
     await consumer.connect();
-    await consumer.subscribe({ topic: 'application.events', fromBeginning: true });
+    await consumer.subscribe({ topic: 'application.events', fromBeginning: false });
 
     await consumer.run({
         eachMessage: async ({ topic, partition, message }) => {

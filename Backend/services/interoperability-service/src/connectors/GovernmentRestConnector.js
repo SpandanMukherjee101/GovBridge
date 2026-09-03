@@ -27,11 +27,8 @@ class GovernmentRestConnector extends BaseConnector {
 
     async healthCheck() {
         try {
-            // Usually we'd hit /health, but we might not know the exact path for that specific connector.
-            // Let's assume the base domain has a health check.
-            const url = new URL(this.config.base_url);
-            const healthUrl = `${url.protocol}//${url.host}/api/mock/health`;
-            const response = await axios.get(healthUrl, { timeout: 2000 });
+            // Use the internal K8s service DNS to reach the mock-government-service directly
+            const response = await axios.get('http://mock-government-service:3005/health', { timeout: 2000 });
             return response.status === 200;
         } catch (error) {
             return false;
