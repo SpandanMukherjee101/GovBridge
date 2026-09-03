@@ -527,6 +527,40 @@
 					}
 				},
 				{
+					"name": "Create Consent Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer <INSERT_ACCESS_TOKEN>"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"applicationId\": \"APP-1001\",\n    \"applicantId\": 1,\n    \"requestingDepartment\": \"MUNICIPAL_LICENSING\",\n    \"sourceSystem\": \"PROPERTY_REGISTRY\",\n    \"purpose\": \"BUSINESS_LICENSE\",\n    \"scopes\": [\n        \"PROPERTY_OWNERSHIP\",\n        \"PROPERTY_ADDRESS\"\n    ],\n    \"expiresAt\": \"2026-09-30T23:59:59Z\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:30080/api/interoperability/consents/requests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"interoperability",
+								"consents",
+								"requests"
+							]
+						}
+					}
+				},
+				{
 					"name": "List Consents",
 					"request": {
 						"method": "GET",
@@ -547,6 +581,121 @@
 								"api",
 								"interoperability",
 								"consents"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Consent",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer <INSERT_ACCESS_TOKEN>"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:30080/api/interoperability/consents/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"interoperability",
+								"consents",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Grant Consent",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer <INSERT_ACCESS_TOKEN>"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:30080/api/interoperability/consents/1/grant",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"interoperability",
+								"consents",
+								"1",
+								"grant"
+							]
+						}
+					}
+				},
+				{
+					"name": "Reject Consent",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer <INSERT_ACCESS_TOKEN>"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"reason\": \"I do not want this information shared.\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:30080/api/interoperability/consents/1/reject",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"interoperability",
+								"consents",
+								"1",
+								"reject"
+							]
+						}
+					}
+				},
+				{
+					"name": "Revoke Consent",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer <INSERT_ACCESS_TOKEN>"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:30080/api/interoperability/consents/1/revoke",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"interoperability",
+								"consents",
+								"1",
+								"revoke"
 							]
 						}
 					}

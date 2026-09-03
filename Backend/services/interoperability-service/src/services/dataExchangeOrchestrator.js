@@ -16,7 +16,7 @@ exports.runExchange = async (applicationId, applicantId, requiredSystems) => {
 
         // For demo: verify consent
         const consentRes = await pool.query(
-            "SELECT * FROM consents WHERE applicant_id = $1 AND status = 'ACTIVE' AND valid_until > NOW()",
+            "SELECT * FROM consents WHERE applicant_id = $1 AND status = 'ACTIVE' AND expires_at > NOW()",
             [applicantId]
         );
         

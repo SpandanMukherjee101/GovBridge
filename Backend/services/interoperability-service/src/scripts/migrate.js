@@ -24,22 +24,23 @@ async function migrate() {
                 method VARCHAR(10) DEFAULT 'GET'
             );
 
-            CREATE TABLE IF NOT EXISTS consent_requests (
-                id SERIAL PRIMARY KEY,
-                applicant_id INTEGER NOT NULL,
-                requesting_department VARCHAR(100) NOT NULL,
-                purpose TEXT,
-                status VARCHAR(50) DEFAULT 'PENDING',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
+            DROP TABLE IF EXISTS consents CASCADE;
+            DROP TABLE IF EXISTS consent_requests CASCADE;
 
             CREATE TABLE IF NOT EXISTS consents (
                 id SERIAL PRIMARY KEY,
+                application_id VARCHAR(100) NOT NULL,
                 applicant_id INTEGER NOT NULL,
-                consent_request_id INTEGER REFERENCES consent_requests(id),
+                requesting_department VARCHAR(100) NOT NULL,
+                source_system VARCHAR(100) NOT NULL,
+                purpose TEXT,
                 scopes TEXT[],
-                valid_until TIMESTAMP,
-                status VARCHAR(50) DEFAULT 'ACTIVE',
+                status VARCHAR(50) DEFAULT 'PENDING',
+                expires_at TIMESTAMP,
+                granted_at TIMESTAMP,
+                revoked_at TIMESTAMP,
+                rejected_at TIMESTAMP,
+                rejection_reason TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
 

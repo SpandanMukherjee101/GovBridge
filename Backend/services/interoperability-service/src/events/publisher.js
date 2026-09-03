@@ -16,7 +16,7 @@ const connectProducer = async () => {
 
 connectProducer();
 
-exports.publishEvent = async (eventType, applicationId, targetSystem, payload) => {
+exports.publishEvent = async (eventType, applicationId, targetSystem, payload, topic = 'data.exchange.events') => {
     if (!isConnected) return;
     
     const event = {
@@ -31,10 +31,10 @@ exports.publishEvent = async (eventType, applicationId, targetSystem, payload) =
 
     try {
         await producer.send({
-            topic: 'data.exchange.events',
+            topic: topic,
             messages: [{ value: JSON.stringify(event) }]
         });
-        console.log(`Published ${eventType} for App ${applicationId}`);
+        console.log(`Published ${eventType} for App ${applicationId} on topic ${topic}`);
     } catch (err) {
         console.error('Error publishing event:', err);
     }
