@@ -30,10 +30,8 @@ async function seed() {
         await pool.query("INSERT INTO entity_identifiers (entity_id, source_system, external_identifier) VALUES ($1, 'TAX_SYSTEM', 'TAX-A101')", [entId]);
 
         // Consent
-        await pool.query(
-            "INSERT INTO consents (application_id, applicant_id, requesting_department, source_system, purpose, scopes, status, expires_at, granted_at) VALUES ('APP-1001', 1, 'DEPT-LICENSING', 'MULTIPLE', 'Business License Verification', ARRAY['PROPERTY_READ', 'TAX_READ'], 'ACTIVE', '2030-12-31', CURRENT_TIMESTAMP)"
-        );
-
+        // Removed APP-1001 consent as requested
+        
         console.log('Seeded interoperability data correctly.');
     } catch (err) {
         console.error('Seeding error:', err);
