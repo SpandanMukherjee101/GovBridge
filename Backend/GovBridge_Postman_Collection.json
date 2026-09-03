@@ -601,6 +601,107 @@
 							]
 						}
 					}
+				},
+				{
+					"name": "Get Notifications",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{citizen_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:30080/api/notifications/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"notifications",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Notification by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{citizen_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:30080/api/notifications/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"notifications",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Mark Notification as Read",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{citizen_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:30080/api/notifications/1/read",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"notifications",
+								"1",
+								"read"
+							]
+						}
+					}
+				},
+				{
+					"name": "Mark All Notifications as Read",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{citizen_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:30080/api/notifications/read-all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"notifications",
+								"read-all"
+							]
+						}
+					}
 				}
 			]
 		},
