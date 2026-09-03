@@ -473,6 +473,109 @@
 							]
 						}
 					}
+				},
+				{
+					"name": "List Connectors",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer <INSERT_ACCESS_TOKEN>"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:30080/api/interoperability/connectors",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"interoperability",
+								"connectors"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Connector Health",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer <INSERT_ACCESS_TOKEN>"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:30080/api/interoperability/connectors/1/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"interoperability",
+								"connectors",
+								"1",
+								"health"
+							]
+						}
+					}
+				},
+				{
+					"name": "List Consents",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer <INSERT_ACCESS_TOKEN>"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:30080/api/interoperability/consents",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"interoperability",
+								"consents"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Data Request Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer <INSERT_ACCESS_TOKEN>"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:30080/api/interoperability/data-requests/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "30080",
+							"path": [
+								"api",
+								"interoperability",
+								"data-requests",
+								"1"
+							]
+						}
+					}
 				}
 			]
 		},

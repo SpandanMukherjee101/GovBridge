@@ -1,27 +1,16 @@
-const express = require('express');
-const dotenv = require('dotenv');
+const app = require('./app');
 const pool = require('./config/db');
 const redisClient = require('./config/redis');
-const kafkaConfig = require('./config/kafka');
+const kafkaConsumer = require('./events/consumer');
 
-dotenv.config();
-
-const app = express();
 const port = process.env.PORT || 3003;
-
-app.use(express.json());
-
-// Health Check Endpoint
-app.get('/health', (req, res) => {
-    res.json({
-        service: "interoperability-service",
-        status: "ok"
-    });
-});
 
 const server = app.listen(port, () => {
     console.log(`interoperability-service running on port ${port}`);
 });
+
+// Start Kafka Consumer
+kafkaConsumer.startConsumer().catch(console.error);
 
 // Graceful Shutdown
 process.on('SIGTERM', async () => {
