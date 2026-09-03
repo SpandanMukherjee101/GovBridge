@@ -44,6 +44,8 @@ async function migrate() {
                 expires_at TIMESTAMP NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
+            CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email ON users(email);
+            CREATE INDEX IF NOT EXISTS idx_user_roles_user_id ON user_roles(user_id);
         `);
         console.log('Migrations completed successfully.');
     } catch (err) {

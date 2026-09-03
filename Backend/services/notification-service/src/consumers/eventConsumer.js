@@ -76,10 +76,10 @@ const handleMessage = async ({ topic, partition, message }) => {
 
     const cacheKey = `processed_notification_event:${eventId}`;
     
-    // 1. Fast idempotency check in Redis
+    // 1. Fast idempotency check in Redis (Atomic)
     try {
-        const alreadyProcessedInRedis = await redisClient.get(cacheKey);
-        if (alreadyProcessedInRedis) {
+        const acquired = await redisClient.set(cacheKey, 'processing', { NX: true, EX: 300 });
+        if (!acquired) {
             console.log(`[Idempotency] Event ${eventId} skipped (Redis)`);
             return;
         }
@@ -88,8 +88,9 @@ const handleMessage = async ({ topic, partition, message }) => {
     }
 
     // 2. Durable idempotency check in PostgreSQL (Atomic Insert)
-    const client = await pool.connect();
+    let client;
     try {
+        client = await pool.connect();
         await client.query('BEGIN');
         
         // Try to insert event ID to processed_events to guarantee durable deduplication
@@ -131,10 +132,10 @@ const handleMessage = async ({ topic, partition, message }) => {
         }
         
     } catch (err) {
-        await client.query('ROLLBACK');
+        if (client) await client.query('ROLLBACK');
         console.error('Error processing event:', err);
     } finally {
-        client.release();
+        if (client) client.release();
     }
 };
 

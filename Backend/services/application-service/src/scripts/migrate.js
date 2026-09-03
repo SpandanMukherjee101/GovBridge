@@ -55,6 +55,8 @@ async function migrate() {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 completed_at TIMESTAMP
             );
+            CREATE INDEX IF NOT EXISTS idx_applications_applicant_id ON applications(applicant_id);
+            CREATE INDEX IF NOT EXISTS idx_applications_status ON applications(status);
         `);
         console.log('Migrations completed successfully.');
     } catch (err) {

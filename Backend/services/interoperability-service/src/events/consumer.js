@@ -13,10 +13,11 @@ exports.startConsumer = async () => {
             try {
                 const event = JSON.parse(message.value.toString());
                 
-                // Idempotency check via Redis
-                const processed = await redisClient.get(`processed_event:${event.eventId}`);
-                if (processed) {
-                    console.log(`Event ${event.eventId} already processed, skipping.`);
+                // Idempotency check via Redis (Atomic lock)
+                const lockKey = `processed_event:${event.eventId}`;
+                const acquired = await redisClient.set(lockKey, 'processing', { NX: true, EX: 300 });
+                if (!acquired) {
+                    console.log(`Event ${event.eventId} already processed or processing, skipping.`);
                     return;
                 }
 
@@ -26,14 +27,18 @@ exports.startConsumer = async () => {
                     // For BUSINESS_LICENSE (Assume serviceId 1 maps to this requirements)
                     if (event.serviceId === 1) {
                         const requiredSystems = ['PROPERTY_REGISTRY', 'TAX_SYSTEM'];
-                        // We run this asynchronously so we don't block the Kafka consumer loop completely,
-                        // but normally we might await it if we want strict ordering.
-                        orchestrator.runExchange(event.applicationId, event.applicantId, requiredSystems).catch(console.error);
+                        try {
+                            await orchestrator.runExchange(event.applicationId, event.applicantId, requiredSystems);
+                        } catch (exchangeErr) {
+                            // If exchange fails, we can release the lock so it can be retried if needed, or let it expire
+                            await redisClient.del(lockKey);
+                            throw exchangeErr;
+                        }
                     }
                 }
 
-                // Mark event as processed
-                await redisClient.setEx(`processed_event:${event.eventId}`, 86400, 'true');
+                // Mark event as processed durably
+                await redisClient.setEx(lockKey, 86400, 'completed');
 
             } catch (err) {
                 console.error('Error processing Kafka message:', err);

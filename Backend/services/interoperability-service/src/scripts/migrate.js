@@ -88,6 +88,9 @@ async function migrate() {
                 request_id VARCHAR(255),
                 timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
+
+            CREATE INDEX IF NOT EXISTS idx_consents_applicant_id ON consents(applicant_id);
+            CREATE INDEX IF NOT EXISTS idx_data_requests_application_id ON data_requests(application_id);
         `);
         console.log('Migrations completed successfully.');
     } catch (err) {
