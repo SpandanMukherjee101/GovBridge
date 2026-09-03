@@ -31,6 +31,7 @@ class GovernmentRestConnector extends BaseConnector {
             const response = await axios.get('http://mock-government-service:3005/health', { timeout: 2000 });
             return response.status === 200;
         } catch (error) {
+            console.error('Connector health check failed:', error.message);
             return false;
         }
     }

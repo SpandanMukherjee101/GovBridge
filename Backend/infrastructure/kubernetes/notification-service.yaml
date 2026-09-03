@@ -16,7 +16,8 @@ spec:
       containers:
       - name: notification-service
         image: notification-service:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
+        command: ["npm", "run", "dev"]
         ports:
         - containerPort: 3004
         envFrom:

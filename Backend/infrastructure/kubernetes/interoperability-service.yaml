@@ -16,7 +16,8 @@ spec:
       containers:
       - name: interoperability-service
         image: interoperability-service:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
+        command: ["npm", "run", "dev"]
         ports:
         - containerPort: 3003
         envFrom:

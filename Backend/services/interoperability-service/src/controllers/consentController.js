@@ -30,12 +30,26 @@ exports.createConsentRequest = async (req, res, next) => {
 
 exports.listConsents = async (req, res, next) => {
     try {
-        const { status } = req.query;
-        let query = 'SELECT * FROM consents WHERE applicant_id = $1';
-        const params = [req.user.userId];
-        
+        const { status, applicationId } = req.query;
+        let query = 'SELECT * FROM consents WHERE 1=1';
+        const params = [];
+        let paramIndex = 1;
+
+        if (req.user.role === 'CITIZEN') {
+            query += ` AND applicant_id = $${paramIndex++}`;
+            params.push(req.user.userId);
+        } else if (req.user.role === 'OFFICER' || req.user.role === 'ADMIN') {
+            if (applicationId) {
+                query += ` AND application_id = $${paramIndex++}`;
+                params.push(applicationId);
+            } else {
+                // If officer requests all consents, we might want to restrict by department
+                // For now, let them see all or require applicationId
+            }
+        }
+
         if (status) {
-            query += ' AND status = $2';
+            query += ` AND status = $${paramIndex++}`;
             params.push(status);
         }
         
@@ -82,8 +96,8 @@ exports.grantConsent = async (req, res, next) => {
             return res.status(403).json({ success: false, error: { code: 'FORBIDDEN', message: 'Only the applicant can grant consent' } });
         }
         
-        if (consent.status !== 'PENDING') {
-            return res.status(400).json({ success: false, error: { code: 'CONSENT_INVALID_STATE', message: 'Only PENDING consent can be granted' } });
+        if (!['PENDING', 'REVOKED', 'REJECTED'].includes(consent.status)) {
+            return res.status(400).json({ success: false, error: { code: 'CONSENT_INVALID_STATE', message: 'Only PENDING, REVOKED, or REJECTED consent can be granted' } });
         }
         
         if (new Date(consent.expires_at) < new Date()) {
@@ -97,7 +111,7 @@ exports.grantConsent = async (req, res, next) => {
         
         const updatedConsent = updateResult.rows[0];
         
-        await publishEvent('CONSENT_GRANTED', updatedConsent.application_id, updatedConsent.source_system, { consentId: updatedConsent.id }, 'consent.events');
+        await publishEvent('CONSENT_GRANTED', updatedConsent.application_id, updatedConsent.source_system, { consentId: updatedConsent.id, applicantId: updatedConsent.applicant_id }, 'consent.events');
         await auditService.logAudit(req.user.userId, 'CONSENT_GRANTED', 'consents', updatedConsent.id, updatedConsent.purpose, updatedConsent.requesting_department, updatedConsent.source_system, updatedConsent.application_id);
         
         res.json({ success: true, data: updatedConsent });

@@ -7,7 +7,11 @@ exports.getNotifications = async (req, res, next) => {
             'SELECT * FROM notifications WHERE user_id = $1 ORDER BY created_at DESC LIMIT 50',
             [userId]
         );
-        res.json({ status: 'success', data: result.rows });
+        const mappedData = result.rows.map(n => ({
+            ...n,
+            is_read: n.read_at !== null
+        }));
+        res.json({ status: 'success', data: mappedData });
     } catch (err) {
         next(err);
     }
@@ -45,7 +49,7 @@ exports.markAsRead = async (req, res, next) => {
             return res.status(404).json({ status: 'error', message: 'Notification not found or already read' });
         }
         
-        res.json({ status: 'success', data: result.rows[0] });
+        res.json({ status: 'success', data: { ...result.rows[0], is_read: true } });
     } catch (err) {
         next(err);
     }

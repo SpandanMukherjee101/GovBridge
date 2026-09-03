@@ -112,12 +112,27 @@ const handleMessage = async ({ topic, partition, message }) => {
             // Find user_id from event data. Fallback to 1 for demo purposes if absent
             let userId = applicantId || eventData.userId || eventData.applicant_id || 1;
 
+            let parsedAppId = parseInt(applicationId, 10);
+            if (isNaN(parsedAppId)) {
+                parsedAppId = null;
+            }
+
             await client.query(
                 `INSERT INTO notifications (user_id, application_id, type, title, message) 
                  VALUES ($1, $2, $3, $4, $5)`,
-                [userId, applicationId || null, eventType, notificationContent.title, notificationContent.message]
+                [userId, parsedAppId, eventType, notificationContent.title, notificationContent.message]
             );
             console.log(`Notification created for user ${userId}: ${notificationContent.title}`);
+            
+            // For prototype: Also notify the officer (user_id = 2) when a citizen submits an application
+            if (eventType === 'APPLICATION_SUBMITTED') {
+                await client.query(
+                    `INSERT INTO notifications (user_id, application_id, type, title, message) 
+                     VALUES ($1, $2, $3, $4, $5)`,
+                    [2, parsedAppId, eventType, 'Action Required', 'A new Business Licence application is pending your review.']
+                );
+                console.log(`Notification created for officer (user 2): Action Required`);
+            }
         } else {
             console.log(`Ignored unknown event type: ${eventType}`);
         }

@@ -7,6 +7,7 @@ const consumer = kafka.consumer({ groupId: 'interoperability-group' });
 exports.startConsumer = async () => {
     await consumer.connect();
     await consumer.subscribe({ topic: 'application.events', fromBeginning: false });
+    await consumer.subscribe({ topic: 'consent.events', fromBeginning: false });
 
     await consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
@@ -34,6 +35,17 @@ exports.startConsumer = async () => {
                             await redisClient.del(lockKey);
                             throw exchangeErr;
                         }
+                    }
+                }
+                
+                if (event.eventType === 'CONSENT_GRANTED') {
+                    console.log(`Received CONSENT_GRANTED for App ${event.applicationId}`);
+                    const requiredSystems = ['PROPERTY_REGISTRY', 'TAX_SYSTEM'];
+                    try {
+                        await orchestrator.runExchange(event.applicationId, event.payload?.applicantId, requiredSystems);
+                    } catch (exchangeErr) {
+                        await redisClient.del(lockKey);
+                        throw exchangeErr;
                     }
                 }
 

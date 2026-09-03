@@ -6,7 +6,7 @@ const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
 
 router.get('/connectors', authMiddleware, connectorController.listConnectors);
-router.get('/connectors/:id/health', authMiddleware, connectorController.getConnectorHealth);
+router.get('/connectors/:id/health', connectorController.getConnectorHealth);
 
 // Consent Routes
 router.post('/consents/requests', authMiddleware, consentController.createConsentRequest);

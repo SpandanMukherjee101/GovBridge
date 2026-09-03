@@ -14,14 +14,24 @@ exports.runExchange = async (applicationId, applicantId, requiredSystems) => {
         const canonicalId = await entityService.resolveEntity(applicantId);
         console.log(`Resolved to canonical entity: ${canonicalId}`);
 
-        // For demo: verify consent
+        // For demo: verify consent specifically for this application
         const consentRes = await pool.query(
-            "SELECT * FROM consents WHERE applicant_id = $1 AND status = 'ACTIVE' AND expires_at > NOW()",
-            [applicantId]
+            "SELECT * FROM consents WHERE applicant_id = $1 AND application_id = $2 AND status = 'ACTIVE' AND expires_at > NOW()",
+            [applicantId, String(applicationId)]
         );
         
         if (consentRes.rows.length === 0) {
-            throw new Error('No active consent found for applicant');
+            console.log(`No active consent found for applicant ${applicantId}. Creating PENDING consent for application ${applicationId}.`);
+            await pool.query(
+                `INSERT INTO consents (application_id, applicant_id, requesting_department, source_system, purpose, scopes, status, expires_at) 
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, NOW() + INTERVAL '1 year')`,
+                [applicationId, applicantId, 'DEPT-LICENSING', 'MULTIPLE', 'Business License Verification', ['PROPERTY_READ', 'TAX_READ'], 'PENDING']
+            );
+            
+            const { publishEvent } = require('../events/publisher');
+            publishEvent('CONSENT_REQUESTED', applicationId, 'MULTIPLE', { applicantId });
+            
+            throw new Error('No active consent found for applicant; created PENDING consent request.');
         }
         console.log(`Consent verified for applicant ${applicantId}`);
 
