@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: mock-government-service
-        image: mock-government-service:latest
+        image: mock-government-service:v2
         imagePullPolicy: Always
         ports:
         - containerPort: 3005

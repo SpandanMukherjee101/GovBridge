@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: interoperability-service
-        image: interoperability-service:latest
+        image: interoperability-service:v2
         imagePullPolicy: IfNotPresent
         command: ["npm", "run", "dev"]
         ports:

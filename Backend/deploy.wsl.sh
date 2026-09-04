@@ -1,6 +1,11 @@
 #!/bin/bash
 cd "$(dirname "$0")" || exit
 echo "Deploying to Kubernetes on WSL..."
+echo "Tearing down existing govbridge namespace for a clean setup..."
+kubectl delete namespace govbridge --ignore-not-found
+echo "Waiting for namespace deletion to finalize..."
+sleep 5
+
 kubectl apply -f infrastructure/kubernetes/namespace.yaml
 kubectl apply -f infrastructure/kubernetes/configmap.yaml
 kubectl apply -f infrastructure/kubernetes/secrets.yaml

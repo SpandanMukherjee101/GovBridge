@@ -27,7 +27,7 @@ const PERMISSIONS = {
 
 const USERS = [
     { email: 'citizen@govbridge.local', role: 'CITIZEN', department_id: null },
-    { email: 'officer@govbridge.local', role: 'OFFICER', department_id: null },
+    { email: 'officer@govbridge.local', role: 'OFFICER', department_id: 'DEPT-LICENSING' },
     { email: 'admin@govbridge.local', role: 'ADMIN', department_id: null }
 ];
 

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: application-service
-        image: application-service:latest
+        image: application-service:v2
         imagePullPolicy: Always
         ports:
         - containerPort: 3002
