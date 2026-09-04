@@ -95,7 +95,7 @@ export default function ApplicationsPage() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900">
-                        {app.service_type?.replace(/_/g, ' ') || `Application #${app.id}`}
+                        {app.service_name?.replace(/_/g, ' ') || app.service_type?.replace(/_/g, ' ') || `Application #${app.id}`}
                       </h3>
                       <p className="text-sm text-gray-500 mt-1">
                         Submitted on {new Date(app.created_at || Date.now()).toLocaleDateString()}

@@ -14,10 +14,13 @@ kubectl apply -f infrastructure/kubernetes/redis.yaml
 kubectl apply -f infrastructure/kubernetes/kafka.yaml
 echo "Waiting for infrastructure to initialize..."
 sleep 10
-kubectl apply -f infrastructure/kubernetes/identity-service.yaml
-kubectl apply -f infrastructure/kubernetes/application-service.yaml
-kubectl apply -f infrastructure/kubernetes/interoperability-service.yaml
-kubectl apply -f infrastructure/kubernetes/notification-service.yaml
-kubectl apply -f infrastructure/kubernetes/mock-government-service.yaml
-kubectl apply -f infrastructure/kubernetes/nginx-gateway.yaml
+TAG=$(cat .image_tag 2>/dev/null || echo "v2")
+echo "Deploying with image tag: $TAG"
+
+sed "s/:v2/:$TAG/g" infrastructure/kubernetes/identity-service.yaml | kubectl apply -f -
+sed "s/:v2/:$TAG/g" infrastructure/kubernetes/application-service.yaml | kubectl apply -f -
+sed "s/:v2/:$TAG/g" infrastructure/kubernetes/interoperability-service.yaml | kubectl apply -f -
+sed "s/:v2/:$TAG/g" infrastructure/kubernetes/notification-service.yaml | kubectl apply -f -
+sed "s/:v2/:$TAG/g" infrastructure/kubernetes/mock-government-service.yaml | kubectl apply -f -
+sed "s/:v2/:$TAG/g" infrastructure/kubernetes/nginx-gateway.yaml | kubectl apply -f -
 echo "Deployment complete."

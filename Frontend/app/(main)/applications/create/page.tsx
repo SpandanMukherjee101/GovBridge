@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ScrollReveal } from "@/components/animations/ScrollReveal";
-import { ArrowLeft, Send } from "lucide-react";
+import { ArrowLeft, Send, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
@@ -68,10 +68,10 @@ export default function CreateApplicationPage() {
         localStorage.setItem(`applicationData_${appId}`, JSON.stringify(formData));
       }
 
-      router.push("/applications");
+      // Route to application details immediately
+      router.push(`/applications/${appId}`);
     } catch (err: any) {
       setError(err.message || "Failed to submit application");
-    } finally {
       setLoading(false);
     }
   };
@@ -80,24 +80,38 @@ export default function CreateApplicationPage() {
     <div className="space-y-6 max-w-3xl mx-auto">
       <ScrollReveal>
         <div className="flex items-center gap-4 mb-6">
-          <Link href="/applications">
+          <Link href="/services">
             <Button variant="ghost" size="icon" className="rounded-full">
               <ArrowLeft className="w-5 h-5" />
             </Button>
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">New Application</h1>
-            <p className="text-gray-500">Submit a new government service request</p>
+            <h1 className="text-2xl font-bold text-gray-900">Start Application</h1>
+            <p className="text-gray-500">Provide the initial details to begin your process</p>
           </div>
         </div>
       </ScrollReveal>
 
       <ScrollReveal delay={0.1}>
-        <Card>
-          <CardHeader>
+        <Card className="border-gov-blue/20 shadow-md">
+          <CardHeader className="bg-blue-50/50 border-b border-gray-100">
             <CardTitle>Application Details</CardTitle>
+            <CardDescription>
+              Submit minimal information here. GovBridge will handle the rest.
+            </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-6">
+            
+            <div className="mb-8 p-4 bg-emerald-50 border border-emerald-200 rounded-lg flex gap-4 items-start">
+              <ShieldCheck className="w-6 h-6 text-emerald-600 shrink-0 mt-0.5" />
+              <div>
+                <h4 className="font-semibold text-emerald-900">Secure Government Verification</h4>
+                <p className="text-sm text-emerald-700 mt-1">
+                  GovBridge will securely verify eligible information from connected government systems after the required authorization. You will not need to manually submit property or tax documents.
+                </p>
+              </div>
+            </div>
+
             {fetchingServices ? (
               <div className="text-center py-10 text-gray-500 animate-pulse">Loading services...</div>
             ) : (
@@ -134,17 +148,17 @@ export default function CreateApplicationPage() {
                   <textarea 
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    className="w-full p-3 bg-white text-gray-900 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gov-blue/50 focus:border-gov-blue min-h-30"
-                    placeholder="Provide any relevant details for your application..."
+                    className="w-full p-3 bg-white text-gray-900 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gov-blue/50 focus:border-gov-blue min-h-[120px]"
+                    placeholder="Provide any relevant context for your application..."
                   />
-                  <p className="text-xs text-gray-500">Note: The GovBridge prototype currently does not attach this form data to the draft.</p>
+                  <p className="text-xs text-gray-500">Only add information if you believe your automated records might be incomplete.</p>
                 </div>
 
                 <div className="pt-4 border-t border-gray-100 flex justify-end gap-3">
-                  <Link href="/applications">
+                  <Link href="/services">
                     <Button type="button" variant="outline">Cancel</Button>
                   </Link>
-                  <Button type="submit" disabled={loading} className="gap-2">
+                  <Button type="submit" disabled={loading} className="gap-2 bg-gov-blue hover:bg-blue-800">
                     <Send className="w-4 h-4" /> 
                     {loading ? "Submitting..." : "Submit Application"}
                   </Button>

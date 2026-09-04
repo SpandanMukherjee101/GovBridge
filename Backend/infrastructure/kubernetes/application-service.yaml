@@ -16,7 +16,7 @@ spec:
       containers:
       - name: application-service
         image: application-service:v2
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3002
         envFrom:

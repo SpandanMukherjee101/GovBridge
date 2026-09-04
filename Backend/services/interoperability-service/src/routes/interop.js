@@ -17,5 +17,6 @@ router.post('/consents/:id/reject', authMiddleware, consentController.rejectCons
 router.post('/consents/:id/revoke', authMiddleware, consentController.revokeConsent);
 
 router.get('/data-requests/:id', authMiddleware, connectorController.getDataRequestStatus);
+router.get('/data-requests', authMiddleware, connectorController.listDataRequests);
 
 module.exports = router;

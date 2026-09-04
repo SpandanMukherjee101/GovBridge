@@ -16,7 +16,7 @@ spec:
       containers:
       - name: identity-service
         image: identity-service:v2
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3001
         envFrom:

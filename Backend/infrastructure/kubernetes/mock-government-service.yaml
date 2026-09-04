@@ -16,7 +16,7 @@ spec:
       containers:
       - name: mock-government-service
         image: mock-government-service:v2
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3005
         envFrom:

@@ -14,7 +14,8 @@ import {
   Bell,
   Menu,
   KeyRound,
-  User as UserIcon
+  User as UserIcon,
+  Compass
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
@@ -25,8 +26,13 @@ export function Sidebar() {
   
   const navItems = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { name: "Applications", href: "/applications", icon: FileText },
   ];
+
+  if (user?.role === "CITIZEN" || !user?.role) {
+    navItems.push({ name: "Services", href: "/services", icon: Compass });
+  }
+
+  navItems.push({ name: "Applications", href: "/applications", icon: FileText });
 
   if (user?.role === "CITIZEN" || !user?.role) {
     navItems.push({ name: "Consents", href: "/consents", icon: KeyRound });

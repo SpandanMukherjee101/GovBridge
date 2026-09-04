@@ -53,3 +53,23 @@ exports.getDataRequestStatus = async (req, res, next) => {
         next(err);
     }
 };
+
+exports.listDataRequests = async (req, res, next) => {
+    try {
+        const { applicationId } = req.query;
+        let query = `SELECT id, application_id, target_system, status, retry_count, created_at, updated_at 
+                     FROM data_requests WHERE 1=1`;
+        const params = [];
+        let paramIndex = 1;
+
+        if (applicationId) {
+            query += ` AND application_id = $${paramIndex++}`;
+            params.push(applicationId);
+        }
+
+        const result = await pool.query(query, params);
+        res.json({ status: 'success', data: result.rows });
+    } catch (err) {
+        next(err);
+    }
+};
