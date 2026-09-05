@@ -33,8 +33,8 @@ export default function ApplicationsPage() {
       <ScrollReveal>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Applications</h1>
-            <p className="text-gray-500 mt-1">Manage and track your government service requests.</p>
+            <h1 className="text-2xl font-bold text-gray-900">Application Journeys</h1>
+            <p className="text-gray-500 mt-1">Track the end-to-end progress of your government service applications.</p>
           </div>
           {(user?.role !== "OFFICER" && user?.role !== "ADMIN") && (
             <Link href="/applications/create">
@@ -103,12 +103,18 @@ export default function ApplicationsPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-0 pt-4 sm:pt-0 border-gray-100">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium border ${
-                      app.status === 'APPROVED' ? 'bg-green-50 text-green-700 border-green-200' :
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${
+                      app.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
                       app.status === 'REJECTED' ? 'bg-red-50 text-red-700 border-red-200' :
+                      app.status === 'DRAFT' ? 'bg-gray-100 text-gray-500 border-gray-200' :
+                      app.status === 'SUBMITTED' ? 'bg-blue-50 text-blue-700 border-blue-200' :
                       'bg-amber-50 text-amber-700 border-amber-200'
                     }`}>
-                      {app.status || 'PENDING'}
+                      {app.status === 'DRAFT' ? 'Not Submitted' :
+                       app.status === 'SUBMITTED' ? 'Under Review' :
+                       app.status === 'APPROVED' ? '✓ Approved' :
+                       app.status === 'REJECTED' ? '✕ Rejected' :
+                       (app.status || 'Pending')?.replace(/_/g, ' ')}
                     </span>
                     <Link href={`/applications/${app.id}`}>
                       <Button variant="ghost" size="sm">

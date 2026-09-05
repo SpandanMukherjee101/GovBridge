@@ -46,7 +46,7 @@ export default function CreateApplicationPage() {
       // 1. Create Draft Application
       const draft = await apiFetch("/applications/applications", {
         method: "POST",
-        body: JSON.stringify({ serviceId: parseInt(serviceId) }),
+        body: JSON.stringify({ serviceId: parseInt(serviceId), data: { applicant_name: user?.email || "Citizen" } }),
       });
       
       const createdApp = draft.application || draft;
@@ -87,8 +87,35 @@ export default function CreateApplicationPage() {
           </Link>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Start Application</h1>
-            <p className="text-gray-500">Provide the initial details to begin your process</p>
+            <p className="text-gray-500 text-sm">Business Licence · Municipal Licensing Department</p>
           </div>
+        </div>
+
+        {/* Step indicator */}
+        <div className="flex items-center gap-0 mb-6 overflow-x-auto pb-1">
+          {[
+            { n: 1, label: "Select Service", done: true },
+            { n: 2, label: "Submit", active: true },
+            { n: 3, label: "Grant Consent" },
+            { n: 4, label: "Verification" },
+            { n: 5, label: "Decision" },
+          ].map((step, i, arr) => (
+            <div key={step.n} className="flex items-center">
+              <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap ${
+                step.done ? 'bg-emerald-100 text-emerald-700' :
+                step.active ? 'bg-gov-blue text-white' :
+                'bg-gray-100 text-gray-400'
+              }`}>
+                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                  step.done ? 'bg-emerald-200 text-emerald-800' :
+                  step.active ? 'bg-white text-gov-blue' :
+                  'bg-gray-200 text-gray-500'
+                }`}>{step.done ? '✓' : step.n}</span>
+                {step.label}
+              </div>
+              {i < arr.length - 1 && <div className="w-4 h-0.5 bg-gray-200 mx-1" />}
+            </div>
+          ))}
         </div>
       </ScrollReveal>
 

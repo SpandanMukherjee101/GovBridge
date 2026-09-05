@@ -1,6 +1,7 @@
 const express = require('express');
 const connectorController = require('../controllers/connectorController');
 const consentController = require('../controllers/consentController');
+const auditController = require('../controllers/auditController');
 const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
@@ -18,5 +19,7 @@ router.post('/consents/:id/revoke', authMiddleware, consentController.revokeCons
 
 router.get('/data-requests/:id', authMiddleware, connectorController.getDataRequestStatus);
 router.get('/data-requests', authMiddleware, connectorController.listDataRequests);
+
+router.get('/audit', authMiddleware, auditController.listAuditLogs);
 
 module.exports = router;

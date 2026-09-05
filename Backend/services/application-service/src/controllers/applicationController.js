@@ -31,15 +31,15 @@ exports.getService = async (req, res, next) => {
 
 exports.createApplication = async (req, res, next) => {
     try {
-        const { serviceId } = req.body;
+        const { serviceId, data } = req.body;
         if (!serviceId) return res.status(400).json({ status: 'error', message: 'serviceId is required' });
 
         const client = await pool.connect();
         try {
             await client.query('BEGIN');
             const result = await client.query(
-                'INSERT INTO applications (service_id, applicant_id, status) VALUES ($1, $2, $3) RETURNING *',
-                [serviceId, req.user.userId, 'DRAFT']
+                'INSERT INTO applications (service_id, applicant_id, status, data) VALUES ($1, $2, $3, $4) RETURNING *',
+                [serviceId, req.user.userId, 'DRAFT', data || {}]
             );
             const app = result.rows[0];
             await addHistory(client, app.id, 'DRAFT', 'Application created', req.user.userId);

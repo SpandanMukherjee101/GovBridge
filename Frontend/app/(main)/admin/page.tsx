@@ -22,9 +22,11 @@ export default function AdminPage() {
   const [connectors, setConnectors] = useState<Connector[]>([]);
   const [loading, setLoading] = useState(true);
   const [healthStatuses, setHealthStatuses] = useState<Record<number, 'loading' | 'healthy' | 'unhealthy' | null>>({});
+  const [auditLogs, setAuditLogs] = useState<any[]>([]);
 
   useEffect(() => {
     fetchConnectors();
+    fetchAuditLogs();
   }, []);
 
   const fetchConnectors = async () => {
@@ -35,6 +37,15 @@ export default function AdminPage() {
       console.error("Failed to load connectors:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchAuditLogs = async () => {
+    try {
+      const response = await apiFetch('/interoperability/audit');
+      setAuditLogs(Array.isArray(response) ? response : response.data || []);
+    } catch (err) {
+      console.error("Failed to load audit logs:", err);
     }
   };
 
@@ -62,8 +73,13 @@ export default function AdminPage() {
     <div className="space-y-6 max-w-6xl mx-auto">
       <ScrollReveal>
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">System Administration</h1>
-          <p className="text-gray-500 mt-2">Manage backend interoperability connectors and monitor external system health.</p>
+          <h1 className="text-3xl font-bold text-gray-900">INTEROPERABILITY CONTROL CENTRE</h1>
+          <p className="text-gray-500 mt-2">Monitor connected government systems and review the interoperability activity trail.</p>
+        </div>
+
+        <div className="mb-6">
+          <h2 className="text-lg font-bold text-gray-800 mb-1">Connected Government Systems</h2>
+          <p className="text-sm text-gray-500">These connectors allow GovBridge to query external government data sources securely during application verification.</p>
         </div>
       </ScrollReveal>
 
@@ -96,10 +112,13 @@ export default function AdminPage() {
                 </div>
                 
                 <div>
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Base URL</p>
-                  <div className="bg-gray-50 p-2 rounded border border-gray-100 text-sm text-gray-700 font-mono break-all">
-                    {connector.base_url}
-                  </div>
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Protocol</p>
+                  <p className="text-sm font-medium text-gray-900">REST</p>
+                </div>
+                
+                <div>
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Last Updated</p>
+                  <p className="text-sm font-medium text-gray-900">{new Date(connector.updated_at).toLocaleString()}</p>
                 </div>
 
                 <div className="flex justify-between items-center pt-2">
@@ -153,6 +172,70 @@ export default function AdminPage() {
           <p className="text-gray-500 mt-1">There are currently no interoperability connectors configured in the system.</p>
         </div>
       )}
+
+
+      {/* Interoperability Activity Trail */}
+      <div className="mt-12">
+        <ScrollReveal>
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">INTEROPERABILITY ACTIVITY TRAIL</h2>
+            <p className="text-gray-500 mt-1">Immutable log of consent grants, data exchanges, and application events across connected systems.</p>
+          </div>
+          <Card className="shadow-md overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left text-gray-500">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th className="px-6 py-4">Timestamp</th>
+                    <th className="px-6 py-4">Action</th>
+                    <th className="px-6 py-4">Application</th>
+                    <th className="px-6 py-4">Source Dept</th>
+                    <th className="px-6 py-4">Target System</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {auditLogs.map((log) => (
+                    <tr key={log.id} className="bg-white hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-gray-600 font-mono text-xs">
+                        {new Date(log.timestamp || log.created_at).toLocaleString()}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                          log.action.includes('GRANT') || log.action.includes('VERIFIED') ? 'bg-emerald-100 text-emerald-700' :
+                          log.action.includes('REJECT') || log.action.includes('REVOKE') || log.action.includes('FAILED') ? 'bg-red-100 text-red-700' :
+                          'bg-blue-100 text-blue-700'
+                        }`}>
+                          {log.action.replace(/_/g, ' ')}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 font-mono text-xs text-gray-600">
+                        {log.resource_id ? `APP-${log.resource_id}` : '--'}
+                      </td>
+                      <td className="px-6 py-4 text-gray-700 font-medium">
+                        {log.source_system?.replace(/_/g, ' ') || 'SYSTEM'}
+                      </td>
+                      <td className="px-6 py-4 text-gray-700 font-medium">
+                        {log.target_system?.replace(/_/g, ' ') || '--'}
+                      </td>
+                    </tr>
+                  ))}
+                  {auditLogs.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="px-6 py-12 text-center">
+                        <div className="text-gray-400 text-sm">
+                          <p className="font-medium text-gray-600 mb-1">No activity recorded yet</p>
+                          <p>Submit an application as a Citizen, then grant consent — activity will appear here.</p>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </ScrollReveal>
+      </div>
+
     </div>
   );
 }

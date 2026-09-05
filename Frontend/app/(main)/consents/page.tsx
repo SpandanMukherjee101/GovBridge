@@ -12,7 +12,8 @@ import {
   KeyRound, 
   XCircle,
   FileCheck2,
-  Clock
+  Clock,
+  CheckCircle2
 } from "lucide-react";
 
 export default function ConsentsPage() {
@@ -84,15 +85,25 @@ export default function ConsentsPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'ACTIVE':
-        return <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1"><ShieldCheck className="w-3 h-3"/> Active</span>;
+        return <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1"><ShieldCheck className="w-3 h-3"/> ✓ Authorized</span>;
       case 'PENDING':
         return <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1"><Clock className="w-3 h-3"/> Pending Request</span>;
       case 'REJECTED':
-        return <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1"><XCircle className="w-3 h-3"/> Rejected</span>;
+        return <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1"><XCircle className="w-3 h-3"/> Access not granted</span>;
       case 'REVOKED':
-        return <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1"><XCircle className="w-3 h-3"/> Revoked</span>;
+        return <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1"><XCircle className="w-3 h-3"/> ⊘ Access revoked</span>;
       default:
         return <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs font-semibold">{status}</span>;
+    }
+  };
+
+  const mapScopeToText = (scope: string) => {
+    switch (scope) {
+      case 'PROPERTY_READ': return 'Property ownership';
+      case 'PROPERTY_WRITE': return 'Update property records';
+      case 'TAX_CLEARANCE': return 'Tax clearance status';
+      case 'IDENTITY_READ': return 'Identity verification';
+      default: return scope.replace(/_/g, ' ').toLowerCase();
     }
   };
 
@@ -100,8 +111,19 @@ export default function ConsentsPage() {
     <div className="max-w-5xl mx-auto space-y-6">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Data Sharing Consents</h1>
-          <p className="text-gray-500 mt-1">Manage cross-departmental data exchange requests securely.</p>
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Data Access Authorisations</h1>
+          <p className="text-gray-500 mt-1">Control which government departments can access your records for each application.</p>
+        </div>
+      </div>
+
+      <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-start gap-3">
+        <ShieldCheck className="w-5 h-5 text-gov-blue shrink-0 mt-0.5" />
+        <div>
+          <p className="text-sm font-semibold text-gov-blue">Your data, your choice</p>
+          <p className="text-sm text-blue-700 mt-0.5">
+            When you submit an application, GovBridge requests access to eligible government records on your behalf.
+            You control what is shared and when — no data moves without your explicit authorisation.
+          </p>
         </div>
       </div>
 
@@ -133,13 +155,18 @@ export default function ConsentsPage() {
                 }`}></div>
                 <CardHeader className="pb-3 border-b border-gray-100">
                   <div className="flex justify-between items-start">
-                    <CardTitle className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                      <FileCheck2 className="w-5 h-5 text-gov-blue" />
-                      {consent.requesting_department || 'Department Request'} 
-                      <span className="text-xs text-gray-400 font-normal ml-2">(App ID: {consent.application_id})</span>
+                    <CardTitle className="text-sm font-bold text-gray-500 uppercase tracking-wider flex items-center gap-2">
+                      <FileCheck2 className="w-4 h-4 text-gov-blue" />
+                      DATA ACCESS REQUEST
                     </CardTitle>
                     {getStatusBadge(consent.status)}
                   </div>
+                  <h3 className="text-xl font-bold text-gray-900 mt-2">
+                    {consent.requesting_department || 'Department Request'}
+                  </h3>
+                  <p className="text-sm text-gray-500 mt-1 font-medium bg-gray-50 inline-block px-2 py-1 rounded">
+                    Application #APP-{consent.application_id}
+                  </p>
                 </CardHeader>
                 <CardContent className="pt-4 space-y-4">
                   
@@ -148,26 +175,31 @@ export default function ConsentsPage() {
                     <p className="text-gray-900 font-medium">{consent.purpose || 'Not specified'}</p>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Source System</h4>
-                      <p className="text-gray-900 text-sm">{consent.source_system || 'N/A'}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Requested Scopes</h4>
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {consent.scopes ? consent.scopes.map((s: string, i: number) => (
-                          <span key={i} className="text-[10px] bg-gov-blue/10 text-gov-blue-dark px-2 py-0.5 rounded-sm font-medium">
-                            {s}
-                          </span>
-                        )) : <span className="text-sm text-gray-500">None</span>}
-                      </div>
-                    </div>
+                  <div>
+                    <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Source</h4>
+                    <p className="text-gray-900 text-sm">{consent.source_system === 'PROPERTY_REGISTRY' ? 'Property Registry' : consent.source_system === 'TAX_SYSTEM' ? 'Tax System' : consent.source_system || 'N/A'}</p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Requested information</h4>
+                    <ul className="mt-1 space-y-1">
+                      {consent.scopes ? consent.scopes.map((s: string, i: number) => (
+                        <li key={i} className="text-sm text-gray-800 flex items-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-gov-blue" />
+                          {mapScopeToText(s)}
+                        </li>
+                      )) : <li className="text-sm text-gray-500">None</li>}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Authorization</h4>
+                    <p className="text-sm text-gray-800">Specific to this application</p>
                   </div>
 
                   <div className="text-xs text-gray-400 flex justify-between items-center pt-2 border-t border-gray-50">
                     <span>Requested: {new Date(consent.created_at).toLocaleDateString()}</span>
-                    {consent.expires_at && <span>Expires: {new Date(consent.expires_at).toLocaleDateString()}</span>}
+                    {consent.expires_at ? <span>Expires: {new Date(consent.expires_at).toLocaleDateString()}</span> : <span>Expires: Never</span>}
                   </div>
 
                   {consent.status === 'REJECTED' && consent.rejection_reason && (
@@ -219,9 +251,9 @@ export default function ConsentsPage() {
                         <div className="flex gap-2">
                           <Button 
                             onClick={() => handleAction(consent.id, 'grant')}
-                            className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                            className="flex-1 bg-gov-blue hover:bg-blue-700 text-white"
                           >
-                            Grant
+                            Grant Access
                           </Button>
                           <Button 
                             onClick={() => setRejectingId(consent.id)}

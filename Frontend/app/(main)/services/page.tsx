@@ -83,7 +83,7 @@ export default function ServicesPage() {
             <CardFooter className="bg-gray-50 border-t border-gray-100 pt-6">
               <Link href="/applications/create" className="w-full">
                 <Button className="w-full h-12 text-lg font-semibold bg-gov-blue hover:bg-blue-800">
-                  Start Application <ArrowRight className="w-5 h-5 ml-2" />
+                  Apply Now — Start the Demo <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
             </CardFooter>
@@ -130,6 +130,32 @@ export default function ServicesPage() {
                 <Button variant="outline" className="w-full" disabled>Coming Soon</Button>
               </CardFooter>
             </Card>
+          </div>
+        </div>
+      </ScrollReveal>
+
+      {/* What happens after you apply */}
+      <ScrollReveal delay={0.3}>
+        <div className="mt-4 bg-gradient-to-r from-gov-blue-dark to-gov-blue text-white rounded-2xl p-8">
+          <h2 className="text-xl font-bold mb-6">What happens after you apply?</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 items-start">
+            {[
+              { n: 1, label: "You submit", sub: "One application, minimal information" },
+              { n: 2, label: "You consent", sub: "Authorise data access from connected systems" },
+              { n: 3, label: "GovBridge verifies", sub: "Property Registry + Tax System queried automatically" },
+              { n: 4, label: "Officer reviews", sub: "All verifications pre-attached to the application" },
+              { n: 5, label: "You get a decision", sub: "Single notification, one outcome" },
+            ].map((step, i, arr) => (
+              <div key={i} className="flex sm:flex-col items-start sm:items-center gap-3 sm:gap-2 text-center">
+                <div className="w-8 h-8 rounded-full bg-white/20 border-2 border-white/30 text-white text-sm font-bold flex items-center justify-center shrink-0">
+                  {step.n}
+                </div>
+                <div className="sm:text-center">
+                  <p className="font-semibold text-sm">{step.label}</p>
+                  <p className="text-xs text-white/60 mt-0.5 leading-snug">{step.sub}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </ScrollReveal>

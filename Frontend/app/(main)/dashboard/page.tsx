@@ -17,6 +17,7 @@ export default function DashboardPage() {
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const [appTimeline, setAppTimeline] = useState<any[]>([]);
   const [dataRequests, setDataRequests] = useState<any[]>([]);
+  const [officerApps, setOfficerApps] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -47,6 +48,10 @@ export default function DashboardPage() {
           }
         }
 
+        if (user?.role === 'OFFICER') {
+          setOfficerApps(apps);
+        }
+
         // Fetch consents
         if (user?.role === 'CITIZEN') {
           const consentsData = await apiFetch("/interoperability/consents");
@@ -61,7 +66,8 @@ export default function DashboardPage() {
 
           const grantedConsents = consents.filter((c: any) => c.status === "ACTIVE");
           if (grantedConsents.length > 0) {
-            activities.push({ time: new Date(grantedConsents[0].updated_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), text: `Consent granted for ${grantedConsents[0].purpose}` });
+            const consentTime = grantedConsents[0].updated_at || grantedConsents[0].created_at || new Date().toISOString();
+            activities.push({ time: new Date(consentTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), text: `Consent granted for ${grantedConsents[0].purpose}` });
           }
 
           setRecentActivity(activities.reverse().slice(0, 5));
@@ -81,6 +87,108 @@ export default function DashboardPage() {
   const isTaxVerified = isGovVerificationDone || dataRequests.some(dr => dr.target_system === 'TAX_SYSTEM' && dr.status === 'COMPLETED');
   const isIdentityVerified = !!activeApp; // Identity is implicitly verified upon submission in this system
 
+  if (user?.role === 'OFFICER') {
+    return (
+      <div className="space-y-8 max-w-6xl mx-auto">
+        <ScrollReveal>
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">Applications Pending Review</h1>
+            <p className="text-gray-500 mt-2">Each application below has been submitted by a citizen through GovBridge. Government verifications are pre-attached — review and decide.</p>
+          </div>
+        </ScrollReveal>
+
+        <div className="grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+            <Card className="bg-blue-50 border-blue-100">
+              <CardContent className="p-4 flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-blue-600 font-medium">Pending</p>
+                  <p className="text-2xl font-bold text-blue-900">{officerApps.filter(a => a.status === 'SUBMITTED' || a.status === 'PENDING').length}</p>
+                </div>
+                <Clock className="w-8 h-8 text-blue-200" />
+              </CardContent>
+            </Card>
+            <Card className="bg-amber-50 border-amber-100">
+              <CardContent className="p-4 flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-amber-600 font-medium">Under Review</p>
+                  <p className="text-2xl font-bold text-amber-900">{officerApps.filter(a => a.status === 'UNDER_REVIEW').length}</p>
+                </div>
+                <AlertCircle className="w-8 h-8 text-amber-200" />
+              </CardContent>
+            </Card>
+            <Card className="bg-emerald-50 border-emerald-100">
+              <CardContent className="p-4 flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-emerald-600 font-medium">Approved</p>
+                  <p className="text-2xl font-bold text-emerald-900">{officerApps.filter(a => a.status === 'APPROVED').length}</p>
+                </div>
+                <CheckCircle2 className="w-8 h-8 text-emerald-200" />
+              </CardContent>
+            </Card>
+            <Card className="bg-slate-50 border-slate-200">
+              <CardContent className="p-4 flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-slate-600 font-medium">Total Apps</p>
+                  <p className="text-2xl font-bold text-slate-900">{officerApps.length}</p>
+                </div>
+                <FileText className="w-8 h-8 text-slate-200" />
+              </CardContent>
+            </Card>
+          </div>
+
+          <h2 className="text-lg font-bold text-gray-900 mb-2">Recent Applications</h2>
+          <div className="space-y-4">
+            {officerApps.slice(0, 10).map((app, idx) => (
+              <ScrollReveal key={app.id} delay={idx * 0.05}>
+                <Card className="hover:shadow-md transition-shadow border-l-4 border-l-gov-blue">
+                  <CardContent className="p-6">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-mono bg-gray-100 text-gray-600 px-2 py-0.5 rounded">APP-{app.id.toString().padStart(4, '0')}</span>
+                          <span className={`text-xs font-bold px-2 py-0.5 rounded uppercase ${
+                            app.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700' :
+                            app.status === 'REJECTED' ? 'bg-red-100 text-red-700' :
+                            app.status === 'UNDER_REVIEW' ? 'bg-amber-100 text-amber-700' :
+                            'bg-blue-100 text-blue-700'
+                          }`}>{app.status.replace(/_/g, ' ')}</span>
+                        </div>
+                        <h3 className="text-lg font-bold text-gray-900">{app.service_name?.replace(/_/g, ' ') || app.service_type?.replace(/_/g, ' ') || 'Business Licence'}</h3>
+                        <p className="text-sm text-gray-500">Applicant: {app.data?.applicant_name || `Citizen #${app.applicant_id}`}</p>
+                      </div>
+                      
+                      <div className="flex flex-col md:items-end space-y-2">
+                        <div className="text-sm text-gray-600 flex items-center gap-2">
+                          <span className="font-semibold text-xs text-gray-400 uppercase">Verification:</span>
+                          <span className="inline-flex items-center gap-1"><CheckCircle2 className="w-3 h-3 text-emerald-500"/> Identity</span>
+                          <span className="inline-flex items-center gap-1"><CheckCircle2 className="w-3 h-3 text-emerald-500"/> Property</span>
+                          <span className="inline-flex items-center gap-1"><CheckCircle2 className="w-3 h-3 text-emerald-500"/> Tax</span>
+                        </div>
+                        <p className="text-xs text-gray-400">Updated: {new Date(app.updated_at || app.created_at).toLocaleString()}</p>
+                        <Link href={`/applications/${app.id}`}>
+                          <Button size="sm" className="bg-gov-blue hover:bg-blue-700 text-white mt-2">
+                            Review Application
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </ScrollReveal>
+            ))}
+            {officerApps.length === 0 && !loading && (
+              <div className="text-center py-12 text-gray-500 bg-gray-50 rounded-lg border border-dashed">
+                <FileText className="w-12 h-12 mx-auto text-gray-300 mb-4" />
+                <p>No applications found.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8 max-w-6xl mx-auto">
       {/* Hero Section */}
@@ -91,15 +199,22 @@ export default function DashboardPage() {
           </div>
           <div className="relative z-10 md:w-2/3">
             <h1 className="text-3xl font-bold mb-3">
-              Welcome, {user?.fullName?.split(" ")[0] || user?.email?.split("@")[0]}
+              Welcome{user?.fullName ? `, ${user.fullName.split(" ")[0]}` : user?.email ? `, ${user.email.split("@")[0]}` : ""}
             </h1>
-            <p className="text-blue-100 text-lg mb-6">
-              GovBridge lets you submit once and track verification automatically across connected government systems.
+            <p className="text-blue-100 text-base mb-6">
+              Submit one application. GovBridge handles verification across connected government systems automatically.
             </p>
-            {user?.role === "CITIZEN" && (
+            {!activeApp && user?.role === "CITIZEN" && (
               <Link href="/services">
-                <Button className="bg-white text-gov-blue hover:bg-blue-50 border-0 font-semibold px-6">
-                  Discover Services <ArrowRight className="ml-2 w-4 h-4" />
+                <Button className="bg-white text-gov-blue hover:bg-blue-50 border-0 font-bold px-8 py-5 text-base rounded-xl">
+                  Start with Business Licence <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </Link>
+            )}
+            {activeApp && user?.role === "CITIZEN" && (
+              <Link href={`/applications/${activeApp.id}`}>
+                <Button className="bg-white text-gov-blue hover:bg-blue-50 border-0 font-bold px-8 py-5 text-base rounded-xl">
+                  View Your Application Journey <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </Link>
             )}

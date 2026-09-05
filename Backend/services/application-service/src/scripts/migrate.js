@@ -33,6 +33,7 @@ async function migrate() {
                 service_id INTEGER REFERENCES services(id),
                 applicant_id INTEGER NOT NULL,
                 status VARCHAR(50) NOT NULL DEFAULT 'DRAFT',
+                data JSONB DEFAULT '{}'::jsonb,
                 submitted_at TIMESTAMP,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
