@@ -39,6 +39,9 @@ async function migrate() {
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
 
+            -- Ensure data column exists for databases created before this migration
+            ALTER TABLE applications ADD COLUMN IF NOT EXISTS data JSONB DEFAULT '{}'::jsonb;
+
             CREATE TABLE IF NOT EXISTS application_status_history (
                 id SERIAL PRIMARY KEY,
                 application_id INTEGER REFERENCES applications(id) ON DELETE CASCADE,
